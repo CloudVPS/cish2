@@ -1,0 +1,11 @@
+#prompt cish# 
+#path cmd
+configure           1 <configure>       Run tina configuration script
+enable				0 <enable>			Enter privileged mode
+make                1 <domake>          Run the make file
+ clean              1 <domakeclean>     Clean up the build
+show                0 <>                Show information
+ version            0 <showversion>     Show cish version
+ file				1 <>				Show source files
+  |listfiles		1 <showfile>		Show specific file
+quit                0 <cmd_exit>        Exit the shell

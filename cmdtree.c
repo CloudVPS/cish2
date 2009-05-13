@@ -27,7 +27,6 @@ extern termbuf *GLOBAL_TERMBUF; /* we need this for partial expansion */
  * Deallocates a cmdnode structure's storage and any child nodes the         *
  * structure carries.                                                        *
 \* ------------------------------------------------------------------------- */
-
 void destroy_cmdnode (cmdnode *p)
 {
 	cmdnode *c, *nc;
@@ -54,7 +53,6 @@ void destroy_cmdnode (cmdnode *p)
  * Deallocates the current tree structure and reads a new structured         *
  * file into CMD_ROOT.                                                       *
 \* ------------------------------------------------------------------------- */
-
 char *reload_treedata (const char *path)
 {
 	destroy_cmdnode (CMD_ROOT);
@@ -67,7 +65,6 @@ char *reload_treedata (const char *path)
  * Allocates and initializes a cmdnode structure. If the parent argument     *
  * is not NULL, the created node is rooted into the parent structure.        *
 \* ------------------------------------------------------------------------- */
-
 cmdnode *new_cmdnode (cmdnode *p)
 {
 	cmdnode *res;
@@ -109,7 +106,6 @@ cmdnode *new_cmdnode (cmdnode *p)
  * ----------------------                                                    *
  * Loads a structured file into a cmdtree structure.                         *
 \* ------------------------------------------------------------------------- */
-
 char CRSR[256];
 char CMD_PATH[256];
 
@@ -342,7 +338,6 @@ char *read_treedata (const char *fname)
  * Gives the required text to complete a commandline on a press of <tab>,    *
  * or prints a list of options when the input is ambiguous.                  *
 \* ------------------------------------------------------------------------- */
-
 char *expand_cmdtree (const char *cmdline, int cpos)
 {
 	cmdnode *crsr;
@@ -532,7 +527,6 @@ char *expand_cmdtree (const char *cmdline, int cpos)
  * ----------------------------                                              *
  * Fully completes all individual arguments of a full command line.          *
 \* ------------------------------------------------------------------------- */
-
 term_arglist *expand_cmdtree_full (const char *cmdline)
 {
 	cmdnode *crsr;
@@ -675,7 +669,6 @@ term_arglist *expand_cmdtree_full (const char *cmdline)
  * Shows an overview of all possible expansions, without actually            *
  * expanding anything. Normally bound to the question-mark key.              *
 \* ------------------------------------------------------------------------- */
-
 char *explain_cmdtree (const char *cmdline, int cpos)
 {
 	cmdnode *crsr;
@@ -974,7 +967,6 @@ int cmd_match (const char *word, const char *mterm_)
  * can define a sensible expansion (like adding a ".0" for a <netmask>       *
  * if confronted with a word like "255.255.255").                            *
 \* ------------------------------------------------------------------------- */
-
 char *cmd_expandterm (const char *word, const char *mterm_)
 {
 	char *res;
@@ -1049,7 +1041,6 @@ char *cmd_expandterm (const char *word, const char *mterm_)
  * Allocates a string of the provided length and populates it with a         *
  * substring of the provided text.                                           *
 \* ------------------------------------------------------------------------- */
-
 char *substr (const char *txt, int pos, int len)
 {
 	char *res;

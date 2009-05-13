@@ -1,7 +1,7 @@
 /* ========================================================================= *\
  * CISH2 Configuration Internet Shell                                        *
  * ------------------------------------------------------------------------- *
- * Copyright (C) 2002-2004 Pim van Riezen <pi@madscience.nl>                 *
+ * Copyright (C) 2002-2009 Pim van Riezen <pi@madscience.nl>                 *
  *                                                                           *
  * This software is provided under the GNU General Public License (GPL)      *
  * Read the file LICENSE, that should be provided to you when you got        *
@@ -22,7 +22,6 @@
 #include <sys/ioctl.h>
 
 #define STDIN 0
-#define STDOUT 0
 
 extern void setupterm (int);
 extern void restoreterm (int);
@@ -32,11 +31,10 @@ extern void restoreterm (int);
  * ---------------------------                                               *
  * Take over the terminal. Hack the planet!                                  *
 \* ------------------------------------------------------------------------- */
-
 void terminus_on (void)
 {
 	const char *TERM;
-	setupterm (STDOUT);
+	setupterm (STDIN);
 	
 	/* We hunt for TERM=xterm most probably in a vain attempt to explicitly
 	   tell it vt100 is spoken here. This extra escape was introduced when
@@ -59,10 +57,9 @@ void terminus_on (void)
  * ----------------------------                                              *
  * Give our precious resources back to the Man.                              *
 \* ------------------------------------------------------------------------- */
-
 void terminus_off (void)
 {
-	restoreterm (STDOUT);
+	restoreterm (STDIN);
 }
 
 /* ------------------------------------------------------------------------- *\
@@ -71,7 +68,6 @@ void terminus_off (void)
  * Sets up a new termbuf structure for reading a string of the provided      *
  * buffersize, at a window width as also provided by the arguments.          *
 \* ------------------------------------------------------------------------- */
-
 termbuf *init_termbuf (int size, int _wsize)
 {
 	termbuf *tb;
@@ -133,7 +129,6 @@ termbuf *init_termbuf (int size, int _wsize)
  * --------------------------                                                *
  * Returns a pointer to the last word of a string of text.                   *
 \* ------------------------------------------------------------------------- */
-
 const char *lastword (const char *buf)
 {
 	const char *res;
@@ -153,7 +148,6 @@ const char *lastword (const char *buf)
  * --------------------------------------------                              *
  * Stupid builtin handler, please do not tap the glass.                      *
 \* ------------------------------------------------------------------------- */
-
 char *terminus_builtin_tab (const char *buf, int cpos)
 {
 	const char *term;
@@ -176,7 +170,6 @@ char *terminus_builtin_tab (const char *buf, int cpos)
  * ------------------------------------------------------                    *
  * Adds a new keyhandler for the current termbuf context.                    *
 \* ------------------------------------------------------------------------- */
-
 void terminus_add_handler (termbuf *tb, int key, expnfunc func)
 {
 	keydef *nkeydef;
@@ -213,7 +206,6 @@ void terminus_add_handler (termbuf *tb, int key, expnfunc func)
  * -------------------------------------------                               *
  * Inserts a new character at the current position of the termbuf.           *
 \* ------------------------------------------------------------------------- */
-
 void terminus_insert (termbuf *tb, char c)
 {
 	char *ptr;
@@ -260,7 +252,6 @@ void terminus_insert (termbuf *tb, char c)
  * Handler for the backspace operation. Erases the character to the left of  *
  * the cursor and moves all text behind it one position to the left.         *
 \* ------------------------------------------------------------------------- */
-
 void terminus_backspace (termbuf *tb)
 {
 	char *ptr;
@@ -298,7 +289,6 @@ void terminus_backspace (termbuf *tb)
  * --------------------------------                                          *
  * Handles the 'cursor up' key, going back through a history buffer.         *
 \* ------------------------------------------------------------------------- */
-
 void terminus_crup (termbuf *tb)
 {
 	if (tb->historycrsr == tb->historypos)
@@ -333,7 +323,6 @@ void terminus_crup (termbuf *tb)
  * Handles the 'cursor down' key, going forwards in the history buffer where *
  * we want backwards before.                                                 *
 \* ------------------------------------------------------------------------- */
-
 void terminus_crdown (termbuf *tb)
 {
 	if (tb->historypos == tb->historycrsr) return;
@@ -362,7 +351,6 @@ void terminus_crdown (termbuf *tb)
  * ----------------------------------                                        *
  * Handles cursor movement to the left, if possible.                         *
 \* ------------------------------------------------------------------------- */
-
 void terminus_crleft (termbuf *tb)
 {
 	if (tb->crsr > tb->promptsz)
@@ -389,7 +377,6 @@ void terminus_crleft (termbuf *tb)
  * ----------------------------------                                        *
  * Handles cursor movement to the right, if possible.                        *
 \* ------------------------------------------------------------------------- */
-
 void terminus_cright (termbuf *tb)
 {
 	char *ptr;
@@ -427,7 +414,6 @@ void terminus_cright (termbuf *tb)
  * ----------------------------------                                        *
  * Handling for the ^A key, moves the cursor to the beginning of the line.   *
 \* ------------------------------------------------------------------------- */
-
 void terminus_crhome (termbuf *tb)
 {
 	if (tb->crsr >= tb->promptsz)
@@ -448,7 +434,6 @@ void terminus_crhome (termbuf *tb)
  * ---------------------------------                                         *
  * Handling for the ^E key, moves the cursor to the end of the line.         *
 \* ------------------------------------------------------------------------- */
-
 void terminus_crend (termbuf *tb)
 {
 	int nwcrsr;
@@ -477,13 +462,12 @@ void terminus_crend (termbuf *tb)
  * -------------------------------                                           *
  * Sort of obsoleted, now just the gateway drug to getchar().                *
 \* ------------------------------------------------------------------------- */
-
 int terminus_getkey (void)
 {
 	int res;
-/*	setupterm (STDOUT); */
+/*	setupterm (STDIN); */
 	res = getchar();
-/*	restoreterm (STDOUT); */
+/*	restoreterm (STDIN); */
 	return res;
 }
 
@@ -494,7 +478,6 @@ int terminus_getkey (void)
  * with the 'q' key, 0 if the user responded with another key. Keeps         *
  * waiting for input in other scenarios.                                     *
 \* ------------------------------------------------------------------------- */
-
 int terminus_more (const char *prompt)
 {
 	int c;

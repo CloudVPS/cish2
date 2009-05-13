@@ -52,7 +52,6 @@ void termhandler (int); /* handle SIGTERM gracefully by resetting the term */
  * A terminus keyhandler for ^D. Sends a ^U followed by the literal command  *
  * string 'quit' and a newline.                                              *
 \* ------------------------------------------------------------------------- */
-
 char *control_d (const char *cmdline, int cpos)
 {
 	return ((char *) "\025quit\n");
@@ -64,7 +63,6 @@ char *control_d (const char *cmdline, int cpos)
  * A terminus keyhandler for ^Z. Sends a ^U followed by the literal command  *
  * string 'exit' and a newline.                                              *
 \* ------------------------------------------------------------------------- */
-
 char *control_z (const char *cmdline, int cpos)
 {
 	return ((char *) "\025exit\n");
@@ -77,7 +75,6 @@ char *control_z (const char *cmdline, int cpos)
  * replacements are done: The tilde (~) is replaced by the system's hostname *
  * and the hash (#) is replaced by a gt (>) if the session is not enabled.   *
 \* ------------------------------------------------------------------------- */
-
 void setprompt (char *dst, int sz, const char *in)
 {
 	int sc;
@@ -133,7 +130,6 @@ void setprompt (char *dst, int sz, const char *in)
  * require password authentication for neiher unprivileged mode              *
  * nor enabled mode can start up cish with -E and -P arguments.              *
 \* ------------------------------------------------------------------------- */
-
 int checkpw (int enable, char *plain)
 {
 	FILE *F;
@@ -178,7 +174,6 @@ int checkpw (int enable, char *plain)
  * to change the configured hostname from within a cish script without       *
  * relying on the non-posix sethostname().                                   *
 \* ------------------------------------------------------------------------- */
-
 void readhostname (void)
 {
 	FILE *F;
@@ -197,7 +192,7 @@ void readhostname (void)
 	HOSTNAME[31] = 0;
 	
 	ln = strlen(HOSTNAME);
-	if (ln && (HOSTNAME[ln] < ' ')) HOSTNAME[ln-1] = 0;
+	if (ln && (HOSTNAME[ln-1] < ' ')) HOSTNAME[ln-1] = 0;
 	fclose (F);
 }
 
@@ -209,7 +204,6 @@ void readhostname (void)
  * goes into a loop reading commands and responding to them, like any        *
  * respectionable shell.                                                     *
 \* ------------------------------------------------------------------------- */
-
 int main (int argc, char *argv[])
 {
 	termbuf *tb; /* terminus termbuffer */
@@ -426,10 +420,14 @@ int main (int argc, char *argv[])
 			
 			if (pwattempt == 3)
 			{
+				memset (buf, 0, sizeof (buf));
 				terminus_off ();
 				return (1);
 			}
 		}
+		
+		memset (buf, 0, sizeof (buf));
+		
 		GLOBAL_TERMBUF = tb = init_termbuf (512, 0);
 		terminus_add_handler (tb, 9, expand_cmdtree);
 		terminus_add_handler (tb, '?', explain_cmdtree);
@@ -645,7 +643,6 @@ int main (int argc, char *argv[])
  * On receiving a SIGTERM, reset the terminal screen as a friendly gesture   *
  * towards the bastard that killed us and exit this cruel world.             *
 \* ------------------------------------------------------------------------- */
-
 void termhandler (int sig)
 {
 	terminus_off ();

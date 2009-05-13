@@ -1,0 +1,3 @@
+makeinclude
+configure.paths
+conftest.cpp

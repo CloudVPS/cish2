@@ -1,7 +1,7 @@
 /* ========================================================================= *\
  * CISH2 Configuration Internet Shell                                        *
  * ------------------------------------------------------------------------- *
- * Copyright (C) 2002-2004 Pim van Riezen <pi@madscience.nl>                 *
+ * Copyright (C) 2002-2009 Pim van Riezen <pi@madscience.nl>                 *
  *                                                                           *
  * This software is provided under the GNU General Public License (GPL)      *
  * Read the file LICENSE, that should be provided to you when you got        *
@@ -24,7 +24,6 @@
  * Reads a password (basically fetches the characters without an echo), up   *
  * to the provided length.                                                   *
 \* ------------------------------------------------------------------------- */
-
 void terminus_readpass (char *buf, int size)
 {
 	int tmp, tmp2;

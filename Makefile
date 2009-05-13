@@ -13,6 +13,9 @@ OBJS		= args.o \
 
 all: cish
 
+clean:
+	rm -f *.o cish
+
 cish: $(OBJS)
 	$(CC) -o cish $(OBJS) $(LIBS)
 

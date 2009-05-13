@@ -1,7 +1,7 @@
 /* ========================================================================= *\
  * CISH2 Configuration Internet Shell                                        *
  * ------------------------------------------------------------------------- *
- * Copyright (C) 2002-2004 Pim van Riezen <pi@madscience.nl>                 *
+ * Copyright (C) 2002-2009 Pim van Riezen <pi@madscience.nl>                 *
  *                                                                           *
  * This software is provided under the GNU General Public License (GPL)      *
  * Read the file LICENSE, that should be provided to you when you got        *
@@ -22,15 +22,8 @@
 #include <stdarg.h>
 #include <sys/time.h>
 
-/* Import from tgetchar.c */
-extern void setupterm (int);
-extern void restoreterm (int);
-
 /* The global event-text pipe */
 extern int FEV;
-
-/* Don't ask :( */
-#define STDOUT 0
 
 /* Prototype */
 void terminus_updatecrt (termbuf *tb);
@@ -47,7 +40,6 @@ struct tbuf_struct
  * -------------------------                                                 *
  * Initializes the line buffer.                                              *
 \* ------------------------------------------------------------------------- */
-
 void tbuf_init (void)
 {
 	TBUF.position = 0;
@@ -64,7 +56,6 @@ void tbuf_init (void)
  * because we need a reliable way to use select() and use buffered lines     *
  * at the same time.                                                         *
 \* ------------------------------------------------------------------------- */
-
 void tbuf_read (int fno) /* fill the line buffer */
 {
 	size_t sz;
@@ -84,7 +75,6 @@ void tbuf_read (int fno) /* fill the line buffer */
  * Returns a 1 if there is a complete line (terminated by a newline) inside  *
  * the text buffer.                                                          *
 \* ------------------------------------------------------------------------- */
-
 int tbuf_poll (void)
 {
 	if (strchr (TBUF.buffer, '\n')) return 1;
@@ -100,7 +90,6 @@ int tbuf_poll (void)
  * line is longer than the provided maximum, the remaining part will         *
  * be left in the buffer.                                                    *
 \* ------------------------------------------------------------------------- */
-
 int tbuf_gets (char *into, int maxsz)
 {
 	char *crs;
@@ -134,7 +123,6 @@ int tbuf_gets (char *into, int maxsz)
  * i/o. This makes it possible to print output without switching terminal    *
  * modes.                                                                    *
 \* ------------------------------------------------------------------------- */
-
 void tprintf (const char *fmt, ...)
 {
 	va_list ap;
@@ -153,7 +141,6 @@ void tprintf (const char *fmt, ...)
  * lazy user didn't type, also start looking at the event pipe and print     *
  * notifications as they come in.                                            *
 \* ------------------------------------------------------------------------- */
-
 int terminus_getchar (termbuf *tb)
 {
 	fd_set fds;
@@ -232,7 +219,6 @@ int terminus_getchar (termbuf *tb)
  * Takes care of keyboard input to input a line of text, using               *
  * any keyhandlers configured.                                               *
 \* ------------------------------------------------------------------------- */
-
 const char *terminus_readline (termbuf *tb, const char *prompt)
 {
 	int tmp, tmp2, tmp3;
@@ -255,8 +241,6 @@ const char *terminus_readline (termbuf *tb, const char *prompt)
 		
 	tprintf ("%s", prompt); 
 	terminus_updatecrt (tb);
-	
-	/*setupterm (STDOUT);*/
 	
 	while ((tmp = terminus_getchar(tb)) != '\n')
 	{
@@ -372,8 +356,6 @@ const char *terminus_readline (termbuf *tb, const char *prompt)
 	if (tb->historypos >= HISTORY_SIZE)
 		tb->historypos = 0;
 	
-	
-	/* restoreterm (STDOUT); */
 	return tb->buffer + tb->promptsz;
 }
 
@@ -383,7 +365,6 @@ const char *terminus_readline (termbuf *tb, const char *prompt)
  * Syncs whatever we did to the termbuf to what should be visible on         *
  * the screen.                                                               *
 \* ------------------------------------------------------------------------- */
-
 void terminus_updatecrt (termbuf *tb)
 {
 	int xcrsr, xrdpos, xc;

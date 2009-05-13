@@ -1,7 +1,7 @@
 /* ========================================================================= *\
  * CISH2 Configuration Internet Shell                                        *
  * ------------------------------------------------------------------------- *
- * Copyright (C) 2002-2004 Pim van Riezen <pi@madscience.nl>                 *
+ * Copyright (C) 2002-2009 Pim van Riezen <pi@madscience.nl>                 *
  *                                                                           *
  * This software is provided under the GNU General Public License (GPL)      *
  * Read the file LICENSE, that should be provided to you when you got        *
@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct termios NewInAttribs;
 struct termios OldInAttribs;
@@ -28,7 +29,6 @@ struct termios OldInAttribs;
  * --------------------------                                                *
  * Sets up termios 'our rules' mode, saving the old state.                   *
 \* ------------------------------------------------------------------------- */
-
 void setupterm(int const fd)
 {
     int i;
@@ -50,7 +50,6 @@ void setupterm(int const fd)
  * ----------------------------                                              *
  * Sets up termios to the old state.                                         *
 \* ------------------------------------------------------------------------- */
-
 void restoreterm(int const fd)
 {
     tcsetattr(fd,TCSAFLUSH,&OldInAttribs);

@@ -1,7 +1,7 @@
 /* ========================================================================= *\
  * CISH2 Configuration Internet Shell                                        *
  * ------------------------------------------------------------------------- *
- * Copyright (C) 2002-2004 Pim van Riezen <pi@madscience.nl>                 *
+ * Copyright (C) 2002-2009 Pim van Riezen <pi@madscience.nl>                 *
  *                                                                           *
  * This software is provided under the GNU General Public License (GPL)      *
  * Read the file LICENSE, that should be provided to you when you got        *
@@ -19,7 +19,6 @@
  * ------------------------                                                  *
  * Finds the first whitespace (tab or space) in the given string.            *
 \* ------------------------------------------------------------------------- */
-
 inline char *findspace (char *src)
 {
 	register char *t1;
@@ -43,7 +42,6 @@ inline char *findspace (char *src)
  * Counts the number of arguments (islands of text separated by any amount   *
  * of whitespace) there are in a given string.                               *
 \* ------------------------------------------------------------------------- */
-
 int argcount (const char *string)
 {
 	int ln;
@@ -76,7 +74,6 @@ int argcount (const char *string)
  * ------------------------                                                  *
  * Allocates and initializes a new arglist structure.                        *
 \* ------------------------------------------------------------------------- */
-
 term_arglist *new_args (void)
 {
 	term_arglist *res;
@@ -92,7 +89,6 @@ term_arglist *new_args (void)
  * ------------------------------------                                      *
  * Adds a 'word' element to an arglist structure.                            *
 \* ------------------------------------------------------------------------- */
-
 void add_args (term_arglist *arg, const char *elm)
 {
 	if (arg->argc)
@@ -114,7 +110,6 @@ void add_args (term_arglist *arg, const char *elm)
  * Splits the provided string into an arglist structure containing an array  *
  * of individual words (islands of text, yadda yadda).                       *
 \* ------------------------------------------------------------------------- */
-
 term_arglist *make_args (const char *string)
 {
 	term_arglist *result;
@@ -157,7 +152,6 @@ term_arglist *make_args (const char *string)
  * -------------------------------                                           *
  * Deallocate an arglist structure and the horse it rode in on.              *
 \* ------------------------------------------------------------------------- */
-
 void destroy_args (term_arglist *lst)
 {
 	int i;
