@@ -1,0 +1,155 @@
+Configuration Internet Shell (cish)
+-----------------------------------
+This program offers a configuration shell environment well-suited for
+embedded system interfaces or special purpose system configuration
+handling. It creates a discoverable interface in the style of Cisco,
+Foundry and other command lines. A powerful menu format allows for
+really flexible interfaces with autocompletion.
+
+The termdef format
+------------------
+The configuration syntax employed by cish is handled by a file named
+termdef.cf. Lines in the termdef file are either:
+
+  * Global directives: these start with the hash '#'
+  * Syntax definition: Always four columns separated by white space.
+  
+Global directives
+-----------------
+Two directives are supported currently:
+
+  * #prompt Sets the command prompt format
+  * #path Sets the path for external commands
+
+Syntax definition
+-----------------
+A syntax definition line looks like this:
+
+    configure           1 <configure>       Run tina configuration script
+      ^                 ^      ^                        ^
+      |   Access level -'      `- Command to run        |
+      |                                                 |
+      `- The next word to match                  Help information
+
+You can use either tabs or spaces to separate the fields.
+
+The matchword field uses indenting to handle hierarchy. To make it that
+one match word should follow the other, put it underneath and indent
+one extra space, like this:
+
+    show                0 <>               ...
+     me                 0 <>               ...
+      the               0 <>               ...
+       bloody           0 <>               ...
+        money           0 <showmethemoney> Show me the bloody money
+       money            0 <showmethemoney> Show me the money
+      your              0 <>               ...
+       pokemans         0 <showpokemans>   Your pokemans, show me them
+
+When inerpreting user commands, the shell doesn't care about recognizing
+more than the minimum number of unambiguous characters per word in the
+syntax tree, so "sho me the blo mo" is a valid expression.
+
+You can also create labeled sections for the syntax. If different
+branches of your syntax tree end with a common sequence, this can
+become useful. Here's how it's used:
+
+    never                 0 <>               ...
+     gonna                0 <>               ...
+      @nottodo            0 <>               ...
+    no                    0 <>               ...
+     wonder               0 <>               ...
+      people              0 <>               ...
+       @nottodo           0 <>               ...
+       
+    @nottodo              0 <>               ...
+     give                 0 <>               ...
+      you                 0 <>               ...
+       up                 0 <>               ...
+     let                  0 <>               ...
+      you                 0 <>               ...
+       down               0 <>               ...
+     turn                 0 <>               ...
+      around              0 <>               ...
+       and                0 <>               ...
+        desert            0 <>               ...
+         you              0 <>               ...
+
+It's also possible to add some more dynamics to your syntax by using
+an external command to generate the list of words. Let's create a little
+script and put it in the termdef's #path.
+
+    #!/bin/sh
+    ls -1 /etc/init.d/*
+
+And the termdef:
+
+    #prompt svc-control> 
+    #path /home/joe/svc-control/scripts
+    start                0 <>               Start a service
+     |listservices       0 <startservice>   The service to start
+    stop                 0 <>               Stop a service
+     |listservices       0 <startservice>   The service to stop
+
+Things are currently not quite as simple if such a dynamic list is not
+at the end of your defined sentence. If you want to continue the syntax
+after using an external matchword, you need to define a labeljump in
+the command field:
+
+    service              0 <>               Manage a service
+     |listservices       0 <@svcaction>     The service to manage
+    
+    @svcaction           0 <>               Manage a service
+     start               0 <startservice>   Start the service
+     stop                0 <stopservice>    Stop the service
+ 
+If the tail-end is optional and you want to trigger a command also if
+the user sentence ends at the dynamic word, define the command field
+after the label jump, separated with a colon: <@tailsection:command>.
+
+The command field
+-----------------
+This field determines what should happen if the user were to press
+enter at a specific point in the sentence. If the command field is
+empty, then the sentence is considered incomplete.
+
+Commands are loaded from the #path, with the exception of built-in
+commands. Currently, these are:
+
+    <cmd_exit>      Exits the shell
+    <enable>        Prompt a password to raise privilege level
+
+If a command is prefixed with a '@', it is interpreted as a label jump
+as explained above. If it is prefixed with a ':', then cish will load
+a new termdef with the command's name from the current termdef's
+directory. You can use this to create sub-shells.
+
+If a command leads to a script, it will get every word of the sentence
+after the first as its arguments. This means the commands invoked
+must be more-or-less aware of the syntax they are called in if they
+are to take extra arguments. If we are in a sub-shell, the second
+and later arguments of the command that triggered loading this sub-
+shell will be available through the environment variables $MARG1,
+$MARG2, etc.
+
+Handling of passwords
+---------------------
+By default, cish will try to load two files containing just a
+crypt()ed password hash:
+
+    /var/run/cish-passwd
+    /var/run/cish-enable-passwd
+    
+The -p and -e parameters can be used to change the location of
+these files. There are also several ways to disable authentication:
+
+  1) Use the -P and -E flags to disable password prompting for
+     login and enable.
+  2) Setting CISH_CONF_BYPASS_AUTH=1 in the environment
+  3) On linux, add "bypassauth=1" to the kernel parameters
+
+The default settings make cish suitable as a login shell for an
+account that has no other authentication. Do note that whatever
+transport mechanism is put in front of the login should not be
+allowed to take environment variables from the client.
+
