@@ -50,6 +50,13 @@ When inerpreting user commands, the shell doesn't care about recognizing
 more than the minimum number of unambiguous characters per word in the
 syntax tree, so "sho me the blo mo" is a valid expression.
 
+Matchwords enclosed by angle brackets handle broader classes of input:
+
+	<string>      Matches any word
+	<integer>     Matches any number
+	<ipaddress>   Matches a valid ipv4 address
+	<netmask>     Matches a dotted quad netmask
+
 You can also create labeled sections for the syntax. If different
 branches of your syntax tree end with a common sequence, this can
 become useful. Here's how it's used:
@@ -89,7 +96,7 @@ And the termdef:
     start                0 <>               Start a service
      |listservices       0 <startservice>   The service to start
     stop                 0 <>               Stop a service
-     |listservices       0 <startservice>   The service to stop
+     |listservices       0 <stopservice>    The service to stop
 
 Things are currently not quite as simple if such a dynamic list is not
 at the end of your defined sentence. If you want to continue the syntax
